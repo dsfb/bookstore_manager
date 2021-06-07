@@ -5,6 +5,7 @@ import com.dsfb.bookstoremanager.entity.Book;
 import com.dsfb.bookstoremanager.exception.BookNotFoundException;
 import com.dsfb.bookstoremanager.repository.BookRepository;
 import com.dsfb.bookstoremanager.utils.BookUtils;
+import lombok.var;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -40,5 +41,16 @@ public class BookServiceTest {
         assertEquals(expectedFoundBook.getName(), bookDTO.getName());
         assertEquals(expectedFoundBook.getIsbn(), bookDTO.getIsbn());
         assertEquals(expectedFoundBook.getPublisherName(), bookDTO.getPublisherName());
+    }
+
+    @Test
+    void whenGivenUnexistingIdThenNotFindThrowAnException() {
+        var invalidId = 10L;
+
+        when(bookRepository.findById(invalidId))
+                .thenReturn(Optional.ofNullable(any(Book.class)));
+
+        assertThrows(BookNotFoundException.class, () -> bookService.findById(invalidId));
+
     }
 }
